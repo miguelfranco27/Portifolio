@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exploradores do Cosmos</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            background-color: #050505;
+            color: white;
+            font-family: 'Roboto', sans-serif;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Hero Section com o Canvas 3D */
+        #hero {
+            height: 100vh;
+            width: 100%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        #canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 20px;
+            border-radius: 15px;
+            pointer-events: none; /* Deixa interagir com o 3D atrás */
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            color: #00d4ff;
+        }
+
+        /* Seções de Conteúdo */
+        section {
+            min-height: 80vh;
+            padding: 100px 10%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-bottom: 1px solid #1a1a1a;
+        }
+
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            color: #00d4ff;
+            margin-bottom: 30px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: #111;
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid #333;
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            border-color: #00d4ff;
+            transform: translateY(-5px);
+        }
+
+        .highlight { color: #00d4ff; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <!-- SECTION 1: HERO (COM TERRA 3D) -->
+    <div id="hero">
+        <div id="canvas-container"></div>
+        <div class="hero-content">
+            <h1>COSMOS</h1>
+            <p>Explore as curiosidades do universo infinito</p>
+        </div>
+    </div>
+
+    <!-- SECTION 2: SISTEMA SOLAR -->
+    <section id="sistema-solar">
+        <h2>O Nosso Quintal</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>Vênus</h3>
+                <p>Um dia em Vênus é mais longo que um ano. Ele leva 243 dias terrestres para girar sobre seu eixo.</p>
+            </div>
+            <div class="card">
+                <h3>Júpiter</h3>
+                <p>É tão grande que caberiam <span class="highlight">1.300 Terras</span> dentro dele. É o protetor do nosso sistema.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: MISTÉRIOS -->
+    <section id="misterios">
+        <h2>Buracos Negros</h2>
+        <p>Eles são regiões onde a gravidade é tão forte que nem a luz escapa. Se você entrasse em um, sofreria a <strong>"Espaguetificação"</strong>, sendo esticado como um fio de macarrão.</p>
+    </section>
+
+    <!-- SECTION 4: TECNOLOGIA -->
+    <section id="tecnologia">
+        <h2>Exploração Espacial</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>James Webb</h3>
+                <p>O telescópio mais potente já feito, capaz de ver as primeiras galáxias formadas após o Big Bang.</p>
+            </div>
+            <div class="card">
+                <h3>Colonização</h3>
+                <p>Marte é o principal alvo para a primeira colônia humana fora da Terra nos próximos 20 anos.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 5: FOOTER -->
+    <section id="footer" style="min-height: 20vh; text-align: center;">
+        <p>© 2026 - Exploradores do Espaço. Desenvolvido para curiosos das estrelas.</p>
+    </section>
+
+    <!-- RENDERIZAÇÃO 3D (THREE.JS) -->
+    <script>
+        let scene, camera, renderer, earth;
+
+        function init() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+            // Criando a Terra (Esfera)
+            const geometry = new THREE.SphereGeometry(2, 64, 64);
+            const textureLoader = new THREE.TextureLoader();
+            
+            // Textura da Terra (Usando uma imagem pública de satélite)
+            const texture = textureLoader.load('https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/The_Blue_Marble_%28remastered%29.jpg/1024px-The_Blue_Marble_%28remastered%29.jpg');
+            
+            const material = new THREE.MeshPhongMaterial({ 
+                map: texture,
+                shininess: 5
+            });
+            
+            earth = new THREE.Mesh(geometry, material);
+            scene.add(earth);
+
+            // Luz
+            const light = new THREE.DirectionalLight(0xffffff, 1);
+            light.position.set(5, 3, 5).normalize();
+            scene.add(light);
+            
+            const ambientLight = new THREE.AmbientLight(0x333333);
+            scene.add(ambientLight);
+
+            camera.position.z = 5;
+
+            animate();
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            earth.rotation.y += 0.003; // Velocidade da rotação
+            renderer.render(scene, camera);
+        }
+
+        // Ajustar no redimensionamento da tela
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        init();
+    </script>
+</body>
+</html>
