@@ -1880,18 +1880,6 @@ display: none;
     --intro-gray: #86868b;
 
 
-    background: linear-gradient(
-        135deg,
-        #1a0033,
-        #3b007a,
-        #6a00ff,
-        #8a2be2,
-        #3b007a,
-        #1a0033
-    );
-
-    background-size: 400% 400%;
-    animation: gradientMove 12s ease infinite;
 
     color: var(--intro-text);
     font-family: 'Raleway', sans-serif;
@@ -2030,7 +2018,7 @@ display: none;
     font-weight: 800;
     line-height: 1.1;
     letter-spacing: -1px;
-    color: #ffffff; /* Cor sólida para a primeira linha */
+    color: #000000; /* Cor sólida para a primeira linha */
 }
 
 .intro-title span {
